@@ -1,0 +1,43 @@
+# Google - COMANDOS via GAM
+
+# Desativar lista de usuários na busca de emails com base em um .csv e enviar email da tarefa via powershell
+#Start-Transcript -path ".\logs.txt"
+
+Import-module ActiveDirectory
+Get-ADUser -SearchBase "OU=" -Filter * -Properties * | Select-Object -Property mail | Sort-Object -Property mail | Export-CSV .\alunos.csv -NoTypeInformation
+Import-Csv alunos.csv |
+Select-Object *,@{Name='Dir';Expression={'off'}} |
+Export-Csv alunos_gam.csv -NoTypeInformation
+gam csv alunos_gam.csv gam update user ~mail gal ~Dir
+
+#Stop-Transcript
+Send-MailMessage -From email@email.com -To email@email.com -Subject "Titulo" -body "Tarefa Concluida." -SmtpServer IP_SMTP
+
+
+# Exportar usuários para um CSV com base em uma OU do GSuite
+gam print users query "orgUnitPath='/usuarios'" > resp.csv
+
+# Desativar usuários que estão no resp.csv
+gam csv resp.csv gam user ~mail vacation off subject "" message "" startdate 2018-12-20 enddate 2019-01-03
+
+# Ativar aviso de férias nos users que constam no arquivo resp.csv
+gam csv resp.csv gam user ~mail vacation on subject "TITULO" message "Prezado (a),\n\nEstamos em período de férias entre os dias 20/12/18 a 02/01/19." startdate 2018-12-20 enddate 2019-01-03
+
+
+# Adicionar contas secundárias no email do usuário
+# 1o passo)
+# Pegar o código html da assinatura existente do usuário:
+
+gam user usuario@email.com print sendas signature todrive
+
+# Copiar o código da assinatura para um arquivo de texto em codificação ANSI e salvar em html na mesma pasta do GAM
+# 2o passo)
+# Rodar o comando para adicionar a conta desejada e colocando a assinatura idêntica a utilizada no email pessoal do usuário
+
+gam user usuario sendas usuario2@email.com "Usuario 2" replyto redes signature file NOMEDOARQUIVO.html html
+
+# Delegar conta de e-mail para outro usuário
+gam user usuario delegate to usuario2
+
+# Deletar delegate
+gam user usuario delete delegate usuario2

@@ -1,0 +1,57 @@
+# Google CLASSROOM - COMANDOS via GAM 
+# obs: Para exportar para o Google Drive, acrescente o todrive no final da linha
+
+# Exportar cursos atrelados ao ESTUDANTE
+gam print courses student nome.usuario@dominio.com.br
+gam print courses student nome.usuario@dominio.com.br todrive
+
+# Exportar somente com os campos mais usados
+gam print courses student nome.sobrenome@dominio.com.br fields id,name,courseState,descriptionHeading,section todrive
+
+# Exportar cursos atrelados ao PROFESSOR
+gam print courses teacher nome.sobrenome@dominio.com.br
+gam print courses teacher nome.sobrenome@dominio.com.br todrive
+
+# Exportar somente com os campos mais usados
+gam print courses teacher nome.sobrenome@dominio.com.br fields fields id,name,courseState,descriptionHeading,section todrive
+
+# Exportar informações referentes a um ID do curso
+gam info course 123456789
+
+# Substituir o proprietário do curso
+gam update course 123456789 owner nome.usuario@dominio.com.br
+
+# Adicionar um usuário como PROFESSOR a um curso
+gam course 123456789 add teacher nome.usuario@dominio.com.br
+
+# Exportar integrantes de um curso para o Drive
+gam print course-participants course 123456789 todrive
+
+# Deletar um curso
+gam delete course 123456789
+
+# Criar um curso adicionando um professor
+gam create course name "NOME DO CURSOl" section "Informacao da turma" teacher nome.sobrenome@dominio.com.br status ACTIVE
+
+# Remover um aluno ou professor de um curso
+gam course 123456789 remove student ou teacher E-MAIL@DOMINIO.COM.BR
+
+# Alterar o status de um curso
+gam update course 123456789 status active
+
+# Exportar o status de um curso
+gam print courses state provisioned
+gam print courses state provisioned todrive
+
+
+# Adicionar alunos para um curso via CSV
+# Nesse exemplo iremos criar um arquivo .CSV com 2 colunas da seguinte maneira
+curso,email
+123456789,nome.sobrenome@dominio.com.br
+122322123,nome.sobrenome@dominio.com.br
+# salvar o arquivo com nome arquivo.csv
+# Executar o GAM da seguinte maneira:
+gam csv arquivo.csv gam course ~curso add student ~email
+
+# Dessa maneira onde tem ~curso e ~email ele vai ler as colunas do arquivo csv adicionando a mesma pessoa em 2 cursos diferentes.
+# Podemos trabalhar com o CSV adicionando diversos cursos e emails para cada participante.
